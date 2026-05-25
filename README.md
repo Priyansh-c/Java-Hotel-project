@@ -2,7 +2,7 @@ Let me re-read the lab manual carefully before answering.The lab manual is alrea
 
 ---
 
-# 🏨 Your Project Explained Simply
+# 🏨 Java Hotel Project
 
 ## What is it?
 A **Hotel Management System** — a desktop application built in Java that lets hotel staff manage rooms, take bookings, check guests in and out, and view reports. It runs as a standalone window (JavaFX GUI), stores all data in a database (SQLite), and requires no internet or external server.
@@ -29,13 +29,12 @@ SQLite Database          ←  where data is permanently stored
 
 ---
 
-# 📚 OOP Concepts in Your Project (Mapped to Each Week)
+# 📚 OOP Concepts in Your Project 
 
-This is the most important part for your oral exam. For every concept, know **where** it is in your code.
 
 ---
 
-## Week 1 — OOP Concepts
+
 
 **Encapsulation**
 - `Room.java` and `Booking.java` have all fields `private` (like `roomNumber`, `guestName`)
@@ -64,7 +63,7 @@ This is the most important part for your oral exam. For every concept, know **wh
 
 ---
 
-## Week 2 — Wrapper Classes, Autoboxing, Enum
+## Wrapper Classes, Autoboxing, Enum
 
 **Wrapper Classes**
 - `Integer`, `Double`, `Boolean` are used throughout JavaFX properties — `SimpleIntegerProperty`, `SimpleDoubleProperty`, `SimpleBooleanProperty`
@@ -80,7 +79,7 @@ This is the most important part for your oral exam. For every concept, know **wh
 
 ---
 
-## Week 3 & 4 — Multithreading & Synchronization
+## Multithreading & Synchronization
 
 **Threading**
 - JavaFX runs on the **JavaFX Application Thread** — all UI updates happen on this thread
@@ -92,7 +91,7 @@ This is the most important part for your oral exam. For every concept, know **wh
 
 ---
 
-## Week 5 — I/O Streams
+## I/O Streams
 
 **File I/O**
 - SQLite creates a physical file `hotel_management.db` on disk — this is file I/O at the database level
@@ -100,7 +99,7 @@ This is the most important part for your oral exam. For every concept, know **wh
 
 ---
 
-## Week 6 — Random Access File, Serialization
+## Random Access File, Serialization
 
 **Random Access**
 - SQLite's `seek()` equivalent is the SQL `WHERE room_number = ?` query — it jumps directly to a record without reading all rows sequentially, exactly like `RandomAccessFile.seek()`
@@ -110,7 +109,7 @@ This is the most important part for your oral exam. For every concept, know **wh
 
 ---
 
-## Week 7 — Generics
+## Generics
 
 **Generic classes and methods**
 - `ObservableList<Room>`, `ObservableList<Booking>` — type-safe collections
@@ -120,7 +119,7 @@ This is the most important part for your oral exam. For every concept, know **wh
 
 ---
 
-## Week 8 — Collections Framework
+## Collections Framework
 
 **ArrayList**
 - `roomDAO.getAllRooms()` returns `List<Room>` backed by `ArrayList`
@@ -141,7 +140,7 @@ This is the most important part for your oral exam. For every concept, know **wh
 
 ---
 
-## Week 9 & 10 — JavaFX GUI
+## JavaFX GUI
 
 **JavaFX Architecture**
 - `Stage` → `Scene` → root `Node` (BorderPane) → all child nodes
@@ -169,62 +168,3 @@ This is the most important part for your oral exam. For every concept, know **wh
 - `Timeline` + `KeyFrame` — live clock updating every second
 
 ---
-
-# ❓ Questions You'll Most Likely Get
-
-## Basic / Definition Questions
-
-**Q: What is encapsulation and where is it in your project?**
-A: Encapsulation means binding data and methods together and hiding internal data. In my project, `Room.java` has all fields private — `roomNumber`, `roomType`, `pricePerNight` etc. — and they can only be accessed through public getter and setter methods like `getRoomNumber()` and `setPricePerNight()`. I also used JavaFX Properties which add another layer of encapsulation by wrapping primitive values.
-
-**Q: What is polymorphism and where have you used it?**
-A: Polymorphism means one method taking multiple forms. In my project, the `TableCell` factory demonstrates runtime polymorphism — the `updateItem()` method is overridden differently for each column. For example the status column overrides it to show a coloured circle, while the price column overrides it to format the value with a ₹ symbol. JavaFX resolves the correct version at runtime.
-
-**Q: What is the DAO pattern?**
-A: DAO stands for Data Access Object. It separates database logic from UI logic. `RoomDAO` handles all SQL for rooms — `getAllRooms()`, `addRoom()`, `updateRoom()`, `deleteRoom()`. The controllers just call these methods and never write SQL themselves. This makes the code modular and easy to maintain.
-
-**Q: What is a Singleton and where is it used?**
-A: A Singleton ensures only one instance of a class exists. `DatabaseManager` uses it — the constructor is private, and `getInstance()` returns the same object every time. This ensures only one database connection is open throughout the application.
-
-**Q: What is JDBC?**
-A: JDBC stands for Java Database Connectivity. It's an API that lets Java programs connect to databases using SQL. In my project I use it to connect to SQLite — `DriverManager.getConnection()` opens the connection, `PreparedStatement` executes parameterised queries safely, and `ResultSet` holds the returned rows which I map to Java objects.
-
----
-
-## Code-Specific Questions
-
-**Q: Why did you use SQLite instead of MySQL?**
-A: SQLite is file-based — it requires no separate server installation. The database is just a `.db` file created automatically when the app runs. This makes the project truly standalone, which matches the lab requirement of no external database server.
-
-**Q: What is `ObservableList` and why did you use it instead of `ArrayList`?**
-A: `ObservableList` is a JavaFX collection that notifies the UI automatically when items are added or removed. When I do `tableView.setItems(observableList)`, the TableView watches that list — if I add a room to the list, the table updates instantly without me calling any refresh method manually.
-
-**Q: What is a `PreparedStatement` and why use it over a regular `Statement`?**
-A: `PreparedStatement` uses `?` placeholders for values and the JDBC driver safely escapes them. This prevents SQL injection — if someone types malicious SQL in the guest name field, it gets treated as plain text, not executed as code. A regular `Statement` with string concatenation would be vulnerable.
-
-**Q: What does `mapResultSet()` do in your DAO classes?**
-A: It converts a database row into a Java object. When `ResultSet` holds a row from the database, `mapResultSet()` reads each column — `rs.getInt("room_number")`, `rs.getString("room_type")` etc. — and creates a `Room` or `Booking` object. It's essentially deserialization from database to Java object.
-
-**Q: Explain the generic method `col()` in RoomController.**
-A: `private <T> TableColumn<Room, T> col(String name, String property, int width)` — the `<T>` makes it generic, so I can create columns for any data type. I call it as `col("Room #", "roomNumber", 80)` which gives `TableColumn<Room, Integer>`, and `col("Type", "roomType", 100)` which gives `TableColumn<Room, String>`. Without generics I would need a separate method for each data type.
-
-**Q: How does checking out a room work end to end?**
-A: When the user clicks checkout for a booking ID — `BookingDAO.checkoutBooking(id)` updates the booking's status to `CHECKED_OUT` in the database, then `RoomDAO.updateAvailability(roomNumber, true)` sets the room's `available` column back to 1. The next time rooms are loaded, that room appears as available again.
-
-**Q: What JavaFX layout did you use for the main window and why?**
-A: `BorderPane` — it has designated regions: left, right, top, bottom, center. The sidebar navigation goes in `left` and the page content goes in `center`. This is the standard layout for applications with a fixed navigation panel.
-
-**Q: How do the page transitions work?**
-A: When a nav button is clicked, `setContent(Node node)` is called. It sets the new node's opacity to 0, adds it to the `StackPane` content area, then runs a `FadeTransition` that animates opacity from 0 to 1 over 300 milliseconds. This gives a smooth fade-in effect between pages.
-
----
-
-## "What would you improve?" Questions
-
-**Q: What improvements would you make?**
-A: 
-- Replace the String-based room type and booking status with proper **enums** (Week 2 concept)
-- Add **multithreading** — load data from the database on a background thread so the UI doesn't freeze on slow queries, using `Platform.runLater()` to update the UI safely
-- Add **user authentication** — login screen with hashed passwords
-- Generate a **PDF invoice** using file I/O when a guest checks out
-- Add **input validation** with proper error highlighting on fields
