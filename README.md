@@ -28,7 +28,7 @@ SQLite Database          ←  where data is permanently stored
 
 ---
 
-# 📚 OOP Concepts in Your Project 
+# 📚 OOP Concepts in My Project 
 
 
 ---
