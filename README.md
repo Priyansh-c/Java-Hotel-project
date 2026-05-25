@@ -1,4 +1,3 @@
-Let me re-read the lab manual carefully before answering.The lab manual is already in our conversation context from earlier — I'll work from that. Here's everything you need.
 
 ---
 
